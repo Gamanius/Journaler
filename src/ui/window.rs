@@ -24,21 +24,20 @@ impl WindowFrame {
 
 impl eframe::App for WindowFrame {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-
-        if let Some(title) = self.journal.path
-            .as_ref()
-            .and_then(|p| p.file_name())
-            .and_then(|f| f.to_str())
-            .map(|s| format!("Journal: {}", s))
-        {
-            ctx.send_viewport_cmd(egui::ViewportCommand::Title(title));
-        } else {
-            ctx.send_viewport_cmd(egui::ViewportCommand::Title("Journal".to_string()));
-        }
-
-
         egui::TopBottomPanel::top("my_top_panel").show(ctx, |ui| {
-            self.save.update(ui, &mut self.journal);
+            let res = self.save.update(ui, &mut self.journal);
+            if res {
+                if let Some(title) = self.journal.path
+                    .as_ref()
+                    .and_then(|p| p.file_name())
+                    .and_then(|f| f.to_str())
+                    .map(|s| format!("Journal: {}", s))
+                {
+                    ctx.send_viewport_cmd(egui::ViewportCommand::Title(title));
+                } else {
+                    ctx.send_viewport_cmd(egui::ViewportCommand::Title("Journal".to_string()));
+                }
+            }
         });
 
         egui::SidePanel::left("my_left_panel")
@@ -57,4 +56,6 @@ impl eframe::App for WindowFrame {
             }
         });
     }
+
+   
 }

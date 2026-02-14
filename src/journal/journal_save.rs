@@ -8,7 +8,8 @@ pub struct JournalSave {
 }
 
 impl JournalSave {
-    pub fn update(&mut self, ui: &mut egui::Ui, journal: &mut Journal) {
+    pub fn update(&mut self, ui: &mut egui::Ui, journal: &mut Journal) -> bool {
+        let mut changed_name = false;
         ui.horizontal(|ui| {
             if ui.button("Speichern").clicked() {
                 if journal.path == None {
@@ -38,9 +39,12 @@ impl JournalSave {
                         Err(e) => println!("{}", e),
                         Ok(t) => *journal = t,
                     }
+                    changed_name = true;
                 }
             }
         });
+
+        changed_name
     }
 }
 
